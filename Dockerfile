@@ -5,10 +5,12 @@ WORKDIR /app
 COPY requirements-api.txt .
 RUN pip install --no-cache-dir -r requirements-api.txt
 
-COPY src/features.py src/package_model.py src/app.py ./src/
-COPY data/processed/heart_clean.csv ./data/processed/heart_clean.csv
+COPY scripts/download_data.py ./scripts/
+COPY src/features.py src/clean_data.py src/package_model.py src/app.py ./src/
 
-RUN python src/package_model.py \
+RUN python scripts/download_data.py \
+    && python src/clean_data.py \
+    && python src/package_model.py \
     && useradd --create-home appuser \
     && chown -R appuser /app
 USER appuser
