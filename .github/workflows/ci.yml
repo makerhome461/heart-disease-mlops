@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install flake8 pytest
+
+      - name: Lint
+        run: flake8 src tests scripts
+
+      - name: Prepare data
+        run: |
+          python scripts/download_data.py
+          python src/clean_data.py
+
+      - name: Unit tests
+        run: pytest -v
+
+      - name: Train models
+        run: |
+          python src/train.py
+          python src/package_model.py
+
+      - name: Upload model and logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-and-mlflow
+          path: |
+            models/
+            mlflow.db
