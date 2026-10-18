@@ -9,12 +9,16 @@ spec:
       app: heart-api
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: /metrics
       labels:
         app: heart-api
     spec:
       containers:
         - name: heart-api
-          image: heart-api:1.0
+          image: heart-api:1.1
           imagePullPolicy: Never
           ports:
             - containerPort: 8000
