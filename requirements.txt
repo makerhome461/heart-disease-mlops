@@ -5,3 +5,7 @@ matplotlib==3.11.2
 seaborn==0.13.2
 mlflow==3.17.1
 joblib
+fastapi==0.144.0
+uvicorn==0.54.0
+httpx==0.28.1
+pydantic==2.14.1
