@@ -1,6 +1,6 @@
 # Heart Disease Prediction: MLOps Assignment 1
 
-TODO: one or two sentences in your own words on what this project does.
+This project predicts whether a patient is likely to have heart disease from 13 clinical measurements, using the Cleveland subset of the UCI Heart Disease dataset. The model is trained with tracked experiments, tested and built automatically with GitHub Actions, packaged in a Docker image, deployed on Kubernetes (Minikube) as a FastAPI service, and monitored with Prometheus and Grafana.
 
 Repository: https://github.com/makerhome461/heart-disease-mlops
 
@@ -61,11 +61,11 @@ minikube service heart-api --url
 
 ## EDA and modelling choices
 
-TODO: your own notes (class balance, correlations, why Logistic Regression vs Random Forest).
+The raw data has 303 rows. Six rows had missing values in ca and thal, so I dropped them, leaving 297. I converted the 0 to 4 target into a binary label (0 = no disease, 1 = disease), which gives 160 patients without disease and 137 with it, so the classes are roughly balanced. About 68% of the patients are male, and cholesterol has a maximum of 564 against a median of 243, so there is at least one extreme value. I scaled the numeric features (age, trestbps, chol, thalach, oldpeak, ca) and one-hot encoded cp, restecg, slope and thal, because their numbers are category codes rather than amounts. All preprocessing sits inside a scikit-learn pipeline, so each cross-validation fold learns its scaling and encoding only from its own training data. I compared Logistic Regression, a simple and explainable baseline, with Random Forest, which can capture non-linear patterns.
 
 ## Experiment tracking summary
 
-TODO: your own words. Facts: 9 MLflow runs, 5-fold stratified CV, ROC-AUC 0.895 to 0.909, recall 0.765 to 0.780. Final model: Logistic Regression, C=1.0.
+I logged nine runs to MLflow: three Logistic Regression runs (C = 0.1, 1, 10) and six Random Forest runs (max depth 3, 5, 8, each with 100 or 200 trees). Each run used 5-fold stratified cross-validation, and MLflow stored its parameters, the mean and standard deviation of accuracy, precision, recall and ROC-AUC, plus an ROC curve and a confusion matrix. ROC-AUC ranged from 0.895 to 0.909 and recall from 0.765 to 0.780, while scores varied by roughly 0.04 to 0.08 between folds, so the differences between runs are within noise. I chose Logistic Regression with C = 1.0 as the final model because it performed about as well as the Random Forests and is simpler to explain.
 
 ## CI/CD
 
@@ -81,4 +81,4 @@ See the `screenshots/` folder.
 
 ## AI use
 
-TODO: add a line if your course requires disclosing AI assistance, for example how you used it.
+I used an AI assistant (Claude) for guidance on setup, debugging and starter code, and for reviewing my writing. I ran, tested and deployed everything myself and chose the final model from my own experiment results.
